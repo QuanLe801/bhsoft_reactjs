@@ -15,6 +15,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './store';
 import Home from 'page';
 import CustomLayout from 'container/layout';
+import { notification } from 'antd';
 
 const router = createBrowserRouter([
   {

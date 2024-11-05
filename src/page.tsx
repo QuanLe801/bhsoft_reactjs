@@ -36,7 +36,6 @@ export default function Home() {
   const dispatch = useDispatch();
   const { products } = useSelector((state: RootState) => state.product);
   const [isLoading, setIsLoading] = useState<number[]>([]);
-  const [api, contextHolder] = notification.useNotification();
   const [page, setPage] = useState(1);
   const limit = 10;
 
@@ -59,7 +58,7 @@ export default function Home() {
       quantity: 1,
     };
     await dispatch<any>(addToCartAsync({ ...payload }, quantity));
-    api.success({
+    notification.success({
       message: 'Add to cart sucessfully!',
     });
     const addToCartSucess = [...isLoading].filter(item => item !== product.id);
@@ -72,7 +71,6 @@ export default function Home() {
 
   return (
     <section className="container">
-      {contextHolder}
       <StyledContainerWrapper>
         <InfiniteScroll
           dataLength={products?.length || 0}

@@ -1,13 +1,16 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import { deleteOneCart, getCartAsync, updateCart } from 'actions/cartActions';
 import { RootState } from 'reducers/rootReducer';
 import { productsInterface } from 'types/ProductInterface';
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Popover, Table } from 'antd';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function Cart() {
   const dispatch = useDispatch();
+  const [visibleRow, setVisibleRow] = useState<null | number>(null);
+  console.log(visibleRow);
   const { cartProducts, loading } = useSelector(
     (state: RootState) => state.cart,
   );
@@ -24,6 +27,7 @@ export default function Cart() {
   };
 
   const handleDeleteItem = (product: productsInterface) => {
+    setVisibleRow(null);
     dispatch<any>(deleteOneCart(product));
   };
 
@@ -37,11 +41,16 @@ export default function Cart() {
       key: 'deleteItem',
       render: (text: string, record: productsInterface) => (
         <Popover
+          open={visibleRow === record.id}
+          onOpenChange={() => setVisibleRow(null)}
           content={() => confirmDelete(record)}
           title="Are you sure?"
           trigger="click"
         >
-          <span style={{ cursor: 'pointer' }}>
+          <span
+            style={{ cursor: 'pointer' }}
+            onClick={() => setVisibleRow(record.id)}
+          >
             <DeleteOutlined />
           </span>
         </Popover>
@@ -62,7 +71,6 @@ export default function Cart() {
       dataIndex: 'thumbnail',
       key: 'thumbnail',
       render: (thumbnail: string) => (
-        // eslint-disable-next-line jsx-a11y/img-redundant-alt
         <img src={thumbnail} width={140} height={140} alt="image" />
       ),
     },

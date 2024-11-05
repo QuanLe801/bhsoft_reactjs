@@ -33,7 +33,6 @@ export default function Login() {
     (state: RootState) => state.user,
   );
   const navigate = useNavigate();
-  const [api, contextHolder] = notification.useNotification();
 
   const onFinish: FormProps<FieldType>['onFinish'] = values => {
     dispatch<any>(
@@ -45,7 +44,7 @@ export default function Login() {
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = () => {
-    api.error({
+    notification.error({
       message: 'Something went wrong!',
     });
   };
@@ -56,7 +55,6 @@ export default function Login() {
 
   return (
     <StyledLoginContainer>
-      {contextHolder}
       <Typography align="center" className="mb-3">
         Login
       </Typography>
