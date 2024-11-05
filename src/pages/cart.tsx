@@ -2,15 +2,14 @@
 import { deleteOneCart, getCartAsync, updateCart } from 'actions/cartActions';
 import { RootState } from 'reducers/rootReducer';
 import { productsInterface } from 'types/ProductInterface';
-import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Popover, Table } from 'antd';
-import React, { useEffect, useMemo, useState } from 'react';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Table } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PopoverComponent from 'component/popoverComponent';
 
 export default function Cart() {
   const dispatch = useDispatch();
-  const [visibleRow, setVisibleRow] = useState<null | number>(null);
-  console.log(visibleRow);
   const { cartProducts, loading } = useSelector(
     (state: RootState) => state.cart,
   );
@@ -26,34 +25,12 @@ export default function Cart() {
     dispatch<any>(updateCart(incrementQuantity));
   };
 
-  const handleDeleteItem = (product: productsInterface) => {
-    setVisibleRow(null);
-    dispatch<any>(deleteOneCart(product));
-  };
-
-  const confirmDelete = (product: productsInterface) => {
-    return <Button onClick={() => handleDeleteItem(product)}>Yes</Button>;
-  };
-
   const columns = [
     {
       title: '',
       key: 'deleteItem',
       render: (text: string, record: productsInterface) => (
-        <Popover
-          open={visibleRow === record.id}
-          onOpenChange={() => setVisibleRow(null)}
-          content={() => confirmDelete(record)}
-          title="Are you sure?"
-          trigger="click"
-        >
-          <span
-            style={{ cursor: 'pointer' }}
-            onClick={() => setVisibleRow(record.id)}
-          >
-            <DeleteOutlined />
-          </span>
-        </Popover>
+        <PopoverComponent record={record} />
       ),
     },
     {
@@ -84,26 +61,24 @@ export default function Cart() {
       title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
-      render: (text: number, record: productsInterface) => {
-        return (
-          <>
-            <span
-              className="me-4"
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleDecrement(record)}
-            >
-              <MinusOutlined disabled={record.quantity <= 1} />
-            </span>
-            <span className="me-4">{text | 0}</span>
-            <span
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleIncrement(record)}
-            >
-              <PlusOutlined />
-            </span>
-          </>
-        );
-      },
+      render: (text: number, record: productsInterface) => (
+        <>
+          <span
+            className="me-4"
+            style={{ cursor: 'pointer' }}
+            onClick={() => handleDecrement(record)}
+          >
+            <MinusOutlined disabled={record.quantity <= 1} />
+          </span>
+          <span className="me-4">{text | 0}</span>
+          <span
+            style={{ cursor: 'pointer' }}
+            onClick={() => handleIncrement(record)}
+          >
+            <PlusOutlined />
+          </span>
+        </>
+      ),
     },
     {
       title: 'Total',

@@ -1,30 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
-import { Button, Card, Col, notification, Row, Spin } from 'antd';
-import Meta from 'antd/es/card/Meta';
+import { Col, Row, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCartAsync } from 'actions/cartActions';
 import { RootState } from 'reducers/rootReducer';
 import { getProductAsync } from 'actions/productsActions';
 import { productsInterface } from 'types/ProductInterface';
-import Typography from 'typography/typography';
-
-const StyledCardProducts = styled(Card)`
-  img {
-    transition: all 0.3s;
-  }
-  &:hover {
-    img {
-      transform: scale(1.1);
-    }
-  }
-  .ant-card-cover {
-    overflow: hidden;
-  }
-`;
+import CardProductComponent from 'component/cardProductComponent';
 
 const StyledContainerWrapper = styled.div`
   .infinite-scroll-component {
@@ -35,7 +18,7 @@ const StyledContainerWrapper = styled.div`
 export default function Home() {
   const dispatch = useDispatch();
   const { products } = useSelector((state: RootState) => state.product);
-  const [isLoading, setIsLoading] = useState<number[]>([]);
+
   const [page, setPage] = useState(1);
   const limit = 10;
 
@@ -45,24 +28,6 @@ export default function Home() {
 
   const fetchMoreData = () => {
     setPage(page + 1);
-  };
-
-  const addToCart = async (product: productsInterface, quantity: number) => {
-    setIsLoading([...isLoading, product.id]);
-    const payload: productsInterface = {
-      title: product.title,
-      price: product.price.toString(),
-      brand: product.brand as string,
-      thumbnail: product.thumbnail as string,
-      id: product.id,
-      quantity: 1,
-    };
-    await dispatch<any>(addToCartAsync({ ...payload }, quantity));
-    notification.success({
-      message: 'Add to cart sucessfully!',
-    });
-    const addToCartSucess = [...isLoading].filter(item => item !== product.id);
-    setIsLoading([...addToCartSucess]);
   };
 
   useEffect(() => {
@@ -82,35 +47,7 @@ export default function Home() {
             {products?.map((item: productsInterface, key: number) => {
               return (
                 <Col lg={6} md={8} key={key}>
-                  <StyledCardProducts
-                    hoverable
-                    cover={
-                      <img
-                        alt="example"
-                        src={item.thumbnail}
-                        width={240}
-                        height={240}
-                      />
-                    }
-                  >
-                    <Meta title={item.title} description={item.brand} />
-                    <Typography variant="h5" className="mt-2">
-                      {item.price}$
-                    </Typography>
-                    <Button
-                      className="bg-primary"
-                      loading={isLoading.includes(item.id)}
-                      disabled={isLoading.includes(item.id)}
-                    >
-                      <Typography
-                        variant="h4"
-                        className="mb-0 text-white"
-                        onClick={() => addToCart(item, 1)}
-                      >
-                        Add to cart
-                      </Typography>
-                    </Button>
-                  </StyledCardProducts>
+                  <CardProductComponent product={item} />
                 </Col>
               );
             })}
