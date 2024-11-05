@@ -2,7 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from 'react-router-dom';
 import Login from './pages/login';
 import Cart from './pages/cart';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,19 +14,30 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './store';
 import Home from 'page';
+import CustomLayout from 'container/layout';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />,
+    element: <Navigate to="/home" />,
+  },
+  {
+    path: '/',
+    element: <CustomLayout />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: 'cart',
+        element: <Cart />,
+      },
+    ],
   },
   {
     path: '/login',
     element: <Login />,
-  },
-  {
-    path: '/cart',
-    element: <Cart />,
   },
 ]);
 

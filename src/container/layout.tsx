@@ -1,17 +1,12 @@
 import Header from 'container/header';
 import { ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 
-export default function CustomLayout({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+export default function CustomLayout() {
   return (
-    <section className={`${className}`}>
+    <section>
       <Header />
-      {children}
+      <Outlet />
     </section>
   );
 }
